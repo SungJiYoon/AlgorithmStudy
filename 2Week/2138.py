@@ -5,42 +5,37 @@ current_light = [0]*N
 old_light = list(map(int, input()))
 current_light = list(map(int, input()))
 
-result = 0
-
-def light(i):
-    if i != 0 and i != (N-1):
-        for x in range(i - 1, i + 2):
-            if old_light[x] == 0:
-                old_light[x] = 1
-            else:
-                old_light[x] = 0
+def change(num):
+    if num == 0:
+        num = 1
     else:
-        if old_light[i] == 0:
-            old_light[i] = 1
-        else:
-            old_light[i] = 0
-        if i == 0:
-            if old_light[i - 1] == 0:
-                old_light[i - 1] = 1
-            else:
-                old_light[i - 1] = 0
-        elif i == N-1:
-            if old_light[i + 1] == 0:
-                old_light[i + 1] = 1
-            else:
-                old_light[i + 1] = 0
+        num = 0
+    return num
 
-if old_light == current_light:
-    print(result)
+def switch(old_light, cnt):
+    count = cnt
+    if count == 1:
+        old_light[0] = change(old_light[0])
+        old_light[1] = change(old_light[1])
+    for i in range(1, N):
+        if old_light[i-1] != current_light[i-1]:
+            count += 1
+            old_light[i-1] = change(old_light[i-1])
+            old_light[i] = change(old_light[i])
+            if i != N-1:
+                old_light[i+1] = change(old_light[i+1])
+    if old_light == current_light:
+        return count
+    else:
+        return -1
+
+res1 = switch(old_light[:], 0)
+res2 = switch(old_light[:], 1)
+if res1 >= 0 and res2 >= 0:
+    print(min(res1, res2))
+elif res1>=0 and res2 < 0:
+    print(res1)
+elif res1 <0 and res2 >= 0:
+    print(res2)
 else:
-    while old_light != current_light:
-        for i in range(N):
-            if current_light[i] == 1:
-                light(i)
-                result += 1
-                break
-        if current_light == [0,0,0]:
-            result = -1
-            break
-    print(result)
-
+    print(-1)
